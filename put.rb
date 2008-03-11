@@ -10,3 +10,8 @@ p v
 #p v.input
 #p v.elements
 
+parser = AviarcParser.new
+v = parser.parse('{foo}')
+p v
+
+

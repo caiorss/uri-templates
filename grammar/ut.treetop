@@ -10,7 +10,7 @@
 
 grammar Aviarc
   rule uri_template
-    variable / ignore
+    expansion / any* / uri_template
   end
 
 #  rule variable
@@ -25,10 +25,10 @@ grammar Aviarc
 #    }
 #  end
   
-  rule variable
+  rule expansion
     '{' atext+ '}' {
       def pieces
-        [ variable.text_value ]
+        [ atext.text_value ]
       end
     } 
   end
@@ -41,6 +41,10 @@ grammar Aviarc
     ![ \n] .
   end
 
+  # Any but not variable boundaries
+  rule any
+    (.)
+  end
 
   rule atext
     ALPHA / DIGIT
