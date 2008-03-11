@@ -1,0 +1,56 @@
+
+#    op          = 1*ALPHA
+#    arg         = *(reserved / unreserved / pct-encoded)
+#    var         = varname [ '=' vardefault ]
+#    vars        = var [ *("," var) ]
+#    varname     = (ALPHA / DIGIT)*(ALPHA / DIGIT / "." / "_" / "-" )
+#    vardefault  = *(unreserved / pct-encoded)
+#    operator    = "-" op "|" arg "|" vars
+#    expansion   = "{" ( var / operator ) "}"
+
+grammar Aviarc
+  rule uri_template
+    variable / ignore
+  end
+
+#  rule variable
+#    [a-z]+ {
+#      def eval(env={})
+#        env[name]
+#      end
+#      
+#      def name
+#        text_value
+#      end
+#    }
+#  end
+  
+  rule variable
+    '{' atext+ '}' {
+      def pieces
+        [ variable.text_value ]
+      end
+    } 
+  end
+  
+  rule ignore
+    atext+ 
+  end
+
+  rule non_space_char
+    ![ \n] .
+  end
+
+
+  rule atext
+    ALPHA / DIGIT
+  end
+
+  rule ALPHA
+    [A-Za-z]
+  end
+
+  rule DIGIT
+    [0-9]
+  end
+end
