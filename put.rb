@@ -14,4 +14,7 @@ parser = AviarcParser.new
 v = parser.parse('{foo}')
 p v
 
+parser = AviarcParser.new
+v = parser.parse('{foo}{bar}')
+p v
 

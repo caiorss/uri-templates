@@ -10,7 +10,7 @@
 
 grammar Aviarc
   rule uri_template
-    expansion / any* / uri_template
+    expansion / any / uri_template
   end
 
 #  rule variable
@@ -31,10 +31,6 @@ grammar Aviarc
         [ atext.text_value ]
       end
     } 
-  end
-  
-  rule ignore
-    atext+ 
   end
 
   rule non_space_char
