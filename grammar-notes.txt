@@ -1,4 +1,3 @@
-
 #    op          = 1*ALPHA
 #    arg         = *(reserved / unreserved / pct-encoded)
 #    var         = varname [ '=' vardefault ]
@@ -8,10 +7,7 @@
 #    operator    = "-" op "|" arg "|" vars
 #    expansion   = "{" ( var / operator ) "}"
 
-grammar Aviarc
-  rule uri_template
-    expansion / any / uri_template
-  end
+
 
 #  rule variable
 #    [a-z]+ {
@@ -24,33 +20,3 @@ grammar Aviarc
 #      end
 #    }
 #  end
-  
-  rule expansion
-    '{' atext+ '}' {
-      def pieces
-        [ atext.text_value ]
-      end
-    } 
-  end
-
-  rule non_space_char
-    ![ \n] .
-  end
-
-  # Any but not variable boundaries
-  rule any
-    (.)
-  end
-
-  rule atext
-    ALPHA / DIGIT
-  end
-
-  rule ALPHA
-    [A-Za-z]
-  end
-
-  rule DIGIT
-    [0-9]
-  end
-end
