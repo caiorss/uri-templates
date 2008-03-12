@@ -57,5 +57,9 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
       'a_b' => 'baz'
     }
     assert_equal 'http://example.org/?q=foo', @parser.parse('http://example.org/?q={a}').value(defaults)
+    assert_equal 'http://example.org/', @parser.parse('http://example.org/{foo}').value(defaults)
+
+    assert_equal 'relative/%3A%2F%3F%23%5B%5D%40%21%24%26%27%28%29%2A%2B%2C%3B%3D/', @parser.parse('relative/{reserved}/').value(defaults)
+
   end  
 end

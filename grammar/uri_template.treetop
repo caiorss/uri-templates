@@ -15,7 +15,7 @@ grammar UriTemplate
   rule expansion
     '{' key:(var / operator) '}' {
         def value(env={} )
-	  env[name]
+	  CGI.escape(env[name]) if env[name] # CGI.escape(env[name])
         end
 	def name
 	  key.text_value

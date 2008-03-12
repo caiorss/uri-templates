@@ -1,5 +1,8 @@
 require 'rubygems'
 require 'treetop'
+
+require 'uri'
+require 'cgi'
 require File.dirname(__FILE__) + '/grammar'
 
 
