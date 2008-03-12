@@ -23,8 +23,8 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
   
   def test_replace
     assert_equal "stefan", @parser.parse('{foo}').value({"foo" => "stefan"})
-    #assert_equal "stefansaasen", @parser.parse('{foo}saasen').value({"foo" => "stefan"})
-    #assert_equal "httpstefan", @parser.parse('http{foo}').value({"foo" => "stefan"})
+    assert_equal "stefansaasen", @parser.parse('{foo}saasen').value({"foo" => "stefan"})
+    assert_equal "httpstefan", @parser.parse('http{foo}').value({"foo" => "stefan"})
   end
   
 end
