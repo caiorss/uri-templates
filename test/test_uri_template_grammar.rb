@@ -27,4 +27,11 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     assert_equal "httpstefan", @parser.parse('http{foo}').value({"foo" => "stefan"})
   end
   
+
+  def test_draft
+    defaults = {
+      'a' => 'foo'
+    }
+    assert_equal 'http://example.org/?q=foo', @parser.parse('http://example.org/?q={a}').value(defaults)
+  end  
 end
