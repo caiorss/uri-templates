@@ -1,3 +1,11 @@
+# Sequences and all types of terminals are node-instantiating expressions.
+#
+# Nonterminal and ordered choice expressions do not instantiate new nodes, 
+# but rather pass through nodes that are instantiated by other expressions.
+# They can extend nodes they propagate with anonymous or declared modules, 
+# using similar constructs used with expressions that instantiate their own syntax nodes.
+# Note that a choice must always be parenthesized to be associated with a following block.
+
 #    op          = 1*ALPHA
 #    arg         = *(reserved / unreserved / pct-encoded)
 #    var         = varname [ '=' vardefault ]
