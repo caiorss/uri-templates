@@ -14,6 +14,9 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     assert_not_nil @parser.parse('http{foo}').value({"foo" => "stefan"})
     assert_not_nil @parser.parse('http://{foo}')
     assert_not_nil @parser.parse('http://example.org/news/{id}/')
+    assert_not_nil @parser.parse('http://www.google.com/notebook/feeds/{userID}')
+    assert_not_nil @parser.parse('http://www.google.com/notebook/feeds/{-prefix|/notebooks/|notebookID}')
+    assert_not_nil @parser.parse('http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}')
     assert_not_nil @parser.parse('http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}{-opt|/-/|categories}{-listjoin|/|categories}?{-join|&|updated-min,updated-max,alt,start-index,max-results,entryID,orderby}')
     #puts @parser.parse('http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}{-opt|/-/|categories}{-listjoin|/|categories}?{-join|&|updated-min,updated-max,alt,start-index,max-results,entryID,orderby}').inspect
   end
