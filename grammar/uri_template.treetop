@@ -36,33 +36,12 @@ grammar UriTemplate
     alphanumeric / '-' / '&' / '|' / '/' / ','
   end
 
-  rule non_space_char
-    ![ \n] .
-  end
-
-  # Any but not variable boundaries
-  rule any
-	.
-  end
-
-  rule whitespace
-    [\s]*
-  end
-
   rule alpha
     [A-Za-z_]
   end
 
   rule alphanumeric
     alpha / [0-9]
-  end
-
-  rule s	# Optional space
-    S?
-  end
-
-  rule white
-    [ \t\n\r]+
   end
 
 end
