@@ -13,14 +13,7 @@ grammar UriTemplate
   end
 
   rule expansion
-    '{' key:(var / operator) '}' {
-        def value(env={} )
-	  CGI.escape(env[name]) if env[name] # CGI.escape(env[name])
-        end
-	def name
-	  key.text_value
-	end
-    } 
+    '{' (var / operator) '}'
   end
 
   rule uri_part
@@ -37,7 +30,23 @@ grammar UriTemplate
   end
 
   rule op
-    alpha+
+    (
+    'opt' 
+    / 
+    'neg' 
+    / 
+    'prefix' {
+      def exec
+        lambda {|arg| "arg -> #{arg}"} 
+      end
+    } 
+    / 
+    'append' 
+    / 
+    'join' 
+    / 
+    'listjoin'
+    )
   end
 
   rule vars
@@ -61,11 +70,22 @@ grammar UriTemplate
   end
 
   rule var
-    varname ('=' vardefault)*
+    (varname ('=' vardefault)*) {
+        def value(env={} )
+          CGI.escape(env[name]) if env[name] # CGI.escape(env[name])
+        end
+        def name
+          varname.text_value
+        end
+    }
   end
 
   rule operator
-    "-" op "|" arg "|" vars
+    "-" op "|" arg "|" vars { 
+      def value(env={})
+        op.exec.call(arg.text_value) if op.respond_to?(:exec)
+      end
+    }
   end
   
   rule varname
