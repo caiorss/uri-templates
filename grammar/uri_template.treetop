@@ -13,8 +13,8 @@ grammar UriTemplate
   end
 
   rule expansion
-    '{' key:varname+ '}' {
-		def value(env={})
+    '{' key:(var / operator)+ '}' {
+		def value(env={} )
 		  env[name]
 		end
 	    def name
@@ -31,9 +31,49 @@ grammar UriTemplate
           end
         }
   end
+ 
+  rule arg
+    varna+
+  end
 
+  rule op
+    alpha+
+  end
+
+  rule vars
+    var ("," vars)*
+  end
+  
+  rule unreserved
+    alpha+
+  end
+
+  rule pct_encoded
+    alpha+
+  end
+
+  rule reserved
+    [:/?#\[\]@!$&'()*+,;=]+
+  end
+
+  rule vardefault
+    alphanumeric
+  end
+
+  rule var
+    varname ('=' vardefault)*
+  end
+
+  rule operator
+    "-" op "|" arg "|" vars
+  end
+
+  rule varna
+    alphanumeric / '-' / '&' / '/' / ','
+  end
+  
   rule varname
-    alphanumeric / '-' / '&' / '|' / '/' / ','
+    [a-zA-Z0-9] [a-zA-Z0-9_.-]*
   end
 
   rule alpha
