@@ -3,7 +3,7 @@ grammar UriTemplate
   rule uri_template
     uri_element more_elements:(uri_element)* {
       def value(env={})
-        uri_element.value(env) << more_elements.elements.map{|el| el.value(env)}.join
+        uri_element.value(env) << more_elements.elements.map{|el| el.value(env) if el.respond_to?(:value)}.join
       end
     }
   end
@@ -94,7 +94,11 @@ grammar UriTemplate
   end
   
   rule varname
-    [a-zA-Z0-9] [a-zA-Z0-9_.-]*
+    [a-zA-Z0-9] [a-zA-Z0-9_.-]* {
+		def value(env={} )
+          CGI.escape(env[text_value]) if env[text_value] # CGI.escape(env[name])
+        end
+	}
   end
 
   rule alpha
