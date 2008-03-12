@@ -13,7 +13,11 @@ grammar UriTemplate
   end
 
   rule expansion
-    '{' (var / operator) '}'
+    '{' content:(var / operator) '}' {
+      def value(env={})
+        content.elements.map{|el| el.value(env) if el.respond_to?(:value)}.join
+      end
+    }
   end
 
   rule uri_part
@@ -81,9 +85,10 @@ grammar UriTemplate
   end
 
   rule operator
-    "-" op "|" arg "|" vars { 
+    ("-" op "|" arg "|" vars) { 
       def value(env={})
-        op.exec.call(arg.text_value) if op.respond_to?(:exec)
+        val = op.exec.call(arg.text_value) if op.respond_to?(:exec)
+        val ? val : text_value
       end
     }
   end
