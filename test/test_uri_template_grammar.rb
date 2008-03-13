@@ -39,8 +39,8 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
   
   def test_append
     check "", "-append|/|foo"
-    #check "wilma#", "-append|#|foo=wilma"
-    #check "barney&?", "-append|&?|foo=wilma", "foo" =>  "barney"
+    check "wilma#", "-append|#|foo=wilma"
+    check "barney&?", "-append|&?|foo=wilma", "foo" =>  "barney"
   end
   
   def test_listjoin

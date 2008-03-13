@@ -96,9 +96,15 @@ grammar UriTemplate
 	  # the variable followed by the value of arg, otherwise substitute the
 	  # empty string.
       def exec
-        lambda do |env, append, vars| 
-		  if env[vars]
-			val = CGI.escape(env[vars])
+        lambda do |env, append, vars|
+                  v = env[vars]
+                  if vars =~ /([^=]+)=([^=]+)/
+                    var, default = $1.dup, $2.dup
+                    v = env[var]
+                    v = default if v.to_s.blank?
+                  end  
+		  if v
+			val = CGI.escape(v)
 			!val.blank? ? "#{val}#{append}" : ""
 		  else
 		    ''
