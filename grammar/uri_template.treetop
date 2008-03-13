@@ -3,7 +3,8 @@ grammar UriTemplate
   rule uri_template
     uri_element more_elements:(uri_element)* {
       def value(env={})
-        uri_element.value(env) << more_elements.elements.map{|el| el.value(env) if el.respond_to?(:value)}.join
+		#raise more_elements.elements.inspect
+        uri_element.value(env) << more_elements.elements.map{|el| el.value(env)}.join
       end
     }
   end
@@ -13,17 +14,28 @@ grammar UriTemplate
   end
 
   rule expansion
-    '{' content:(var / operator) '}' {
-      def value(env={})
-        content.elements.map{|el| el.value(env) if el.respond_to?(:value)}.join
-      end
-    }
+    '{' 
+	c:(
+		var
+		/
+		operator
+	) 
+	'}'
+	 {
+        def value(env = {})
+            #c.elements.map{|el| if el.respond_to?(:value); el.value(env); else; el.interval.to_s + "<>"; end }.join
+			if c.respond_to? :value
+			c.value(env)
+			else
+			c.interval.to_s + "<>"
+			end
+        end
+      } 
   end
 
   rule uri_part
     (alphanumeric+ / ':' / '/' / '.' / '?' / '&' / '=') {
           def value(env = {})
-            #"def uri_part value"
             text_value
           end
         }
@@ -41,7 +53,12 @@ grammar UriTemplate
     / 
     'prefix' {
       def exec
-        lambda {|arg| "arg -> #{arg}"} 
+        lambda do |env, prefix, vars| 
+		  if env[vars]
+			val = CGI.escape(env[vars])
+			val ? "#{prefix}#{val}" : ""
+		  end
+		end
       end
     } 
     / 
@@ -74,31 +91,26 @@ grammar UriTemplate
   end
 
   rule var
-    (varname ('=' vardefault)*) {
+    varname defaults:('=' vardefault)* {
         def value(env={} )
-          CGI.escape(env[name]) if env[name] # CGI.escape(env[name])
+		  CGI.escape(env[name]) if env[name] # CGI.escape(env[name])
         end
         def name
-          varname.text_value
+		  varname.text_value
         end
     }
   end
 
   rule operator
-    ("-" op "|" arg "|" vars) { 
+    "-" op "|" arg "|" vars { 
       def value(env={})
-        val = op.exec.call(arg.text_value) if op.respond_to?(:exec)
-        val ? val : text_value
+        op.exec.call(env, arg.text_value, vars.text_value) # if op.respond_to?(:exec)
       end
     }
   end
   
   rule varname
-    [a-zA-Z0-9] [a-zA-Z0-9_.-]* {
-		def value(env={} )
-          CGI.escape(env[text_value]) if env[text_value] # CGI.escape(env[name])
-        end
-	}
+    [a-zA-Z0-9] [a-zA-Z0-9_.-]* 
   end
 
   rule alpha
