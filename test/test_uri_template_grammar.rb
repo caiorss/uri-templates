@@ -4,6 +4,10 @@ require File.dirname(__FILE__) + '/test_helper.rb'
  
 class TestUriTemplateGrammar < Test::Unit::TestCase
   
+  def check(expected, template, values = {})
+    assert_equal expected, @parser.parse('{' + template + '}').value(values)      
+  end
+  
   def setup
     @parser = UriTemplateParser.new
   end
@@ -25,7 +29,22 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     assert_equal "stefan", @parser.parse('{foo}').value({"foo" => "stefan"})
     assert_equal "stefansaasen", @parser.parse('{foo}saasen').value({"foo" => "stefan"})
     assert_equal "httpstefan", @parser.parse('http{foo}').value({"foo" => "stefan"})
+    
+    check "", "foo"
+    check "barney", "foo", "foo" => "barney"
+    check "barney", "foo", "foo" => "barney"
+    check "wilma", "foo=wilma"
+    check "barney", "foo=wilma", "foo" => "barney"
   end
+  
+  def test_append
+    check "", "-append|/|foo"
+    #check "wilma#", "-append|#|foo=wilma"
+    #check "barney&?", "-append|&?|foo=wilma", "foo" =>  "barney"
+  end
+  
+  
+  
   
   #                   +----------+--------------------+
   #                   | Name     | Value              |
@@ -68,5 +87,29 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     # prefix op 
     assert_equal '/', @parser.parse('/{-prefix|#|foo}').value(defaults)
     assert_equal './#bar', @parser.parse('./{-prefix|#|b}').value(defaults)
-  end  
+    assert_equal './', @parser.parse('./{-prefix|#|str0}').value(defaults)
+    
+    # append, prefix
+    assert_equal '/foo/#bar', @parser.parse('/{-append|/|a}{-prefix|#|b}').value(defaults)
+    
+    # neg
+    assert_equal '/', @parser.parse('/{-neg|@|a}').value(defaults)
+    
+    # append, opt, neg, prefix
+    assert_equal '/foo/data#bar', @parser.parse('/{-append|/|a}{-opt|data|points}{-neg|@|a}{-prefix|#|b}').value(defaults)
+    
+    # UTF-8
+    # assert_equal 'http://example.org/q=%E2%99%94%E2%99%95', @parser.parse('http://example.org/q={u}/').value(defaults)
+    
+    # join
+    assert_equal 'http://example.org/?a=foo&data=10%2C20%2C30', @parser.parse('http://example.org/?{-join|&|a,data}').value(defaults)
+    
+    # listjoin
+    assert_equal 'http://example.org/?d=10,20,30&a=foo&b=bar', @parser.parse('http://example.org/?d={-listjoin|,|points}&{-join|&|a,b}').value(defaults)    
+    assert_equal 'http://example.org/?d=&', @parser.parse('http://example.org/?d={-listjoin|,|list0}&{-join|&|foo}').value(defaults)
+    
+    # misc
+    assert_equal 'http://example.org/foobar/baz', @parser.parse('http://example.org/{a}{b}/{a_b}').value(defaults)
+    assert_equal 'http://example.org/foo/-/foo/', @parser.parse('http://example.org/{a}{-prefix|/-/|a}/').value(defaults)
+  end
 end

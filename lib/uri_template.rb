@@ -3,6 +3,13 @@ require 'treetop'
 
 require 'uri'
 require 'cgi'
+
+class String
+  def blank?
+    nil? || size < 1
+  end
+end
+
 require File.dirname(__FILE__) + '/grammar'
 
 

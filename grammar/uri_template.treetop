@@ -47,26 +47,102 @@ grammar UriTemplate
 
   rule op
     (
-    'opt' 
+    'opt' {
+	      # If one or more of the variables are defined and non-empty then
+	   	  # substitute the value of 'arg', otherwise substitute the empty string.
+	      def exec
+	        lambda do |env, arg, vars| 
+			  if !env[vars].to_s.blank?
+				"#{arg}"
+			  else
+			    ""
+			  end
+			end
+	      end
+	    }
     / 
-    'neg' 
+    'neg' {
+	  # If all of the variables are un-defined or empty then substitute the
+	  # value of arg, otherwise substitute the empty string.
+      def exec
+        lambda do |env, arg, vars| 
+		  if env[vars].to_s.blank?
+			"#{arg}"
+		  else
+		    ""
+		  end
+		end
+      end
+    }
     / 
     'prefix' {
+	  # The prefix operator MUST only have one variable in its expansion.  If
+	  # the variable is defined and non-empty then substitute the value of
+	  # arg followed by the value of the variable, otherwise substitute the
+	  # empty string.
       def exec
         lambda do |env, prefix, vars| 
 		  if env[vars]
 			val = CGI.escape(env[vars])
-			val ? "#{prefix}#{val}" : ""
+			!val.blank? ? "#{prefix}#{val}" : ""
 		  end
 		end
       end
     } 
     / 
-    'append' 
+    'append' {
+	  # The append operator MUST only have one variable in its expansion.  If
+	  # the variable is defined and non-empty then substitute the value of
+	  # the variable followed by the value of arg, otherwise substitute the
+	  # empty string.
+      def exec
+        lambda do |env, append, vars| 
+		  if env[vars]
+			val = CGI.escape(env[vars])
+			!val.blank? ? "#{val}#{append}" : ""
+		  else
+		    ""
+		  end
+		end
+      end
+    } 
     / 
-    'join' 
+    'join' {
+	  # For each variable that is defined and non-empty create a keyvalue
+	  # string that is the concatenation of the variable name, "=", and the
+	  # variable value.  Concatenate more than one keyvalue string with
+	  # intervening values of arg to create the substitution value.
+	  def exec
+        lambda do |env, joinop, vars| 
+		  vars.split(',').map do |v|
+		  	if env[v]
+              "#{v}=#{CGI.escape(env[v])}"
+		  	end
+		  end.join(joinop)
+		end
+	  end
+	}
     / 
-    'listjoin'
+    'listjoin' {
+	  # The listjoin operator MUST have only one variable in its expansion
+	  # and that variable must be a list.  If the list is non-empty then
+	  # substitute the concatenation of all the list members with intevening
+	  # values of arg.
+      #
+	  # The result of substitution MUST match the URI-reference rule and
+	  # SHOULD also match any known rules for the scheme of the resulting
+	  # URI.
+	  def exec
+        lambda do |env, joinop, vars|
+          return "" unless env[vars].respond_to? :each
+		  env[vars].each do |v|
+		  	if env[v]
+              "#{v}=#{CGI.escape(env[v])}"
+		  	end
+		  end.join(joinop)
+		end
+	  end
+	}
     )
   end
 
