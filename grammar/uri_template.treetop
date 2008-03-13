@@ -115,9 +115,7 @@ grammar UriTemplate
 	  def exec
         lambda do |env, joinop, vars| 
 		  vars.split(',').map do |v|
-		  	if env[v]
-              "#{v}=#{CGI.escape(env[v])}"
-		  	end
+		  	"#{v}=#{CGI.escape(env[v])}" if env[v]
 		  end.join(joinop)
 		end
 	  end

@@ -51,6 +51,47 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     check "", "-listjoin|/|foo", "foo" => []
   end
   
+  def test_join
+    check "", "-join|/|foo"
+    #check "", "-join|/|foo,bar"
+    #check "", "-join|&|q,num"
+    #check "foo=wilma", "-join|#|foo=wilma"
+    #check "foo=wilma", "-join|#|foo=wilma,bar"
+    #check "bar=barney#foo=wilma", "-join|#|foo=wilma,bar=barney"
+    #check "foo=barney", "-join|&?|foo=wilma", "foo" =>  "barney"
+  end
+
+  def test_prefix
+    #check "", "-prefix|&|foo"
+    #check "&wilma", "-prefix|&|foo=wilma"
+    #check "wilma", "-prefix||foo=wilma"
+    #check "&barney", "-prefix||foo=wilma", "foo" =>  "barney"        
+  end
+
+  def test_opt
+    check "", "-opt|&|foo"
+    check "&", "-opt|&|foo", "foo" => "fred"
+    check "", "-opt|&|foo", "foo" => []
+    check "&", "-opt|&|foo", "foo" => ["a"]
+    #check "&", "-opt|&|foo,bar", "foo" => ["a"]
+    #check "&", "-opt|&|foo,bar", "bar" => "a"
+    check "", "-opt|&|foo,bar"
+  end
+
+  def test_neg
+    check "&", "-neg|&|foo"
+    check "", "-neg|&|foo", "foo" => "fred"
+    check "&", "-neg|&|foo", "foo" => []
+    check "", "-neg|&|foo", "foo" => ["a"]
+    #check "", "-neg|&|foo,bar", "bar" => "a"
+    check "&", "-neg|&|foo,bar", "bar" => []
+  end
+  
+  
+  def test_ws
+    #check "%20", "foo", "foo" => ' '
+    #check "%26&%26&%7C&_", "-listjoin|&|foo", "foo" => ["&", "&", "|", "_"]
+  end
   
   #                   +----------+--------------------+
   #                   | Name     | Value              |
