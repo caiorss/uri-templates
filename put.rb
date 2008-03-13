@@ -13,6 +13,6 @@ parser = UriTemplateParser.new
 
 #puts v.value("foo" => "stefan", 'bar' => 'sarah')
 
-v = parser.parse('/{-prefix|#|foo}')
+v = parser.parse('http://example.org/{foo=fred}')
 pp v
-pp v.value("foo" => "stefan", 'bar' => 'sarah')
+pp v.value("foo3" => "stefan", 'bar' => 'sarah')

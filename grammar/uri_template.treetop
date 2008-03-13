@@ -79,7 +79,7 @@ grammar UriTemplate
   end
 
   rule pct_encoded
-    alpha+
+    alpha+ / '%'
   end
 
   rule reserved
@@ -93,7 +93,9 @@ grammar UriTemplate
   rule var
     varname defaults:('=' vardefault)* {
         def value(env={} )
-		  CGI.escape(env[name]) if env[name] # CGI.escape(env[name])
+		  return CGI.escape(env[name]) if env[name] # CGI.escape(env[name])
+		  #defaults.elements[0].text_value if defaults.elements.size > 0
+		  defaults.text_value.gsub(/=/, '')
         end
         def name
 		  varname.text_value

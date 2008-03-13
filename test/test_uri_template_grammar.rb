@@ -62,8 +62,8 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     # reserved
     assert_equal 'relative/%3A%2F%3F%23%5B%5D%40%21%24%26%27%28%29%2A%2B%2C%3B%3D/', @parser.parse('relative/{reserved}/').value(defaults)
     # default value
-    # assert_equal 'http://example.org/fred', @parser.parse('http://example.org/{foo=fred}').value(defaults)
-    # assert_equal 'http://example.org/%25/', @parser.parse('http://example.org/{foo=%25}/').value(defaults)
+    assert_equal 'http://example.org/fred', @parser.parse('http://example.org/{foo=fred}').value(defaults)
+    assert_equal 'http://example.org/%25/', @parser.parse('http://example.org/{foo=%25}/').value(defaults)
  
     # prefix op 
     assert_equal '/', @parser.parse('/{-prefix|#|foo}').value(defaults)
