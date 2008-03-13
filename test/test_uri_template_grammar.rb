@@ -43,7 +43,13 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     #check "barney&?", "-append|&?|foo=wilma", "foo" =>  "barney"
   end
   
-  
+  def test_listjoin
+    check "", "-listjoin|/|foo"
+    check "a/b", "-listjoin|/|foo", "foo" => ['a', 'b']
+    check "ab", "-listjoin||foo", "foo" => ['a', 'b']
+    check "a", "-listjoin|/|foo", "foo" => ['a']
+    check "", "-listjoin|/|foo", "foo" => []
+  end
   
   
   #                   +----------+--------------------+

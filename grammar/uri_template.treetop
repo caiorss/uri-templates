@@ -25,9 +25,9 @@ grammar UriTemplate
         def value(env = {})
             #c.elements.map{|el| if el.respond_to?(:value); el.value(env); else; el.interval.to_s + "<>"; end }.join
 			if c.respond_to? :value
-			c.value(env)
+			  c.value(env)
 			else
-			c.interval.to_s + "<>"
+			  c.interval.to_s + "<>"
 			end
         end
       } 
@@ -101,7 +101,7 @@ grammar UriTemplate
 			val = CGI.escape(env[vars])
 			!val.blank? ? "#{val}#{append}" : ""
 		  else
-		    ""
+		    ''
 		  end
 		end
       end
@@ -147,7 +147,7 @@ grammar UriTemplate
   end
 
   rule vars
-    var ("," vars)*
+    var ("," var)*
   end
   
   rule unreserved
