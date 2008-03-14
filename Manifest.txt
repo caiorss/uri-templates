@@ -2,6 +2,5 @@ History.txt
 Manifest.txt
 README.txt
 Rakefile
-bin/uri-templates
-lib/uri-templates.rb
-test/test_uri-templates.rb
+lib/uri_template.rb
+test/test_uri_template.rb

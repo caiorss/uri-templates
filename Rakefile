@@ -2,9 +2,9 @@
 
 require 'rubygems'
 require 'hoe'
-require './lib/uri-templates.rb'
+require './lib/uri_template/version.rb'
 
-Hoe.new('uri-templates', Uri-templates::VERSION) do |p|
+Hoe.new('uri-templates', UriTemplate::VERSION) do |p|
   p.rubyforge_name = 'uri-templates'
   # p.author = 'FIX'
   # p.email = 'FIX'
