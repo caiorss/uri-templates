@@ -23,12 +23,11 @@ grammar UriTemplate
 	'}'
 	 {
         def value(env = {})
-            #c.elements.map{|el| if el.respond_to?(:value); el.value(env); else; el.interval.to_s + "<>"; end }.join
-			if c.respond_to? :value
-			  c.value(env)
-			else
-			  c.interval.to_s + "<>"
-			end
+	  if c.respond_to? :value
+	    c.value(env)
+	  else
+	    c.interval.to_s + "<>"
+	  end
         end
       } 
   end
@@ -170,17 +169,33 @@ grammar UriTemplate
     var ("," var)*
   end
   
+  # see http://www.ietf.org/rfc/rfc3986.txt
   rule unreserved
-    alphanumeric / '-' / '&' / '/' / ','
+    alphanumeric / "-" / "." / "_" / "~"
   end
 
+  # see http://www.ietf.org/rfc/rfc3986.txt
   rule pct_encoded
-    alpha+ / '%'
+    '%' hexdig hexdig
   end
 
-  rule reserved
-    [:/?#\[\]@!$&'()*+,;=]
+  rule hexdig
+    [a-fA-F0-9]
   end
+  
+  # see http://www.ietf.org/rfc/rfc3986.txt
+  rule reserved
+    gen_delims / sub_delims
+  end
+
+  rule gen_delims
+    ":" / "/" / "?" / "#" / "[" / "]" / "@"
+  end
+
+  rule sub_delims
+    "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "="
+  end
+
 
   rule vardefault
     (unreserved / pct_encoded)*  

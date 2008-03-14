@@ -20,7 +20,6 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     assert_not_nil @parser.parse('http://www.google.com/notebook/feeds/{-prefix|/notebooks/|notebookID}')
     assert_not_nil @parser.parse('http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}')
     assert_not_nil @parser.parse('http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}{-opt|/-/|categories}{-listjoin|/|categories}?{-join|&|updated-min,updated-max,alt,start-index,max-results,entryID,orderby}')
-    #puts @parser.parse('http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}{-opt|/-/|categories}{-listjoin|/|categories}?{-join|&|updated-min,updated-max,alt,start-index,max-results,entryID,orderby}').inspect
   end
   
   def test_replace
@@ -55,7 +54,7 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     check "", "-join|&|q,num"
     check "foo=wilma", "-join|#|foo=wilma"
     check "foo=wilma", "-join|#|foo=wilma,bar"
-    # The following test (taken from the python implementation) seems to be wrong?
+    # The following test (taken from the python implementation) seems to be wrong (notice the order of the list)?
     #check "bar=barney#foo=wilma", "-join|#|foo=wilma,bar=barney"
     check "foo=wilma#bar=barney", "-join|#|foo=wilma,bar=barney"
     check "foo=barney", "-join|&?|foo=wilma", "foo" =>  "barney"
@@ -150,7 +149,7 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     assert_equal '/foo/data#bar', @parser.parse('/{-append|/|a}{-opt|data|points}{-neg|@|a}{-prefix|#|b}').value(defaults)
     
     # UTF-8
-    # assert_equal 'http://example.org/q=%E2%99%94%E2%99%95', @parser.parse('http://example.org/q={u}/').value(defaults)
+    #assert_equal 'http://example.org/q=%E2%99%94%E2%99%95', @parser.parse('http://example.org/q={u}/').value(defaults)
     
     # join
     assert_equal 'http://example.org/?a=foo&data=10%2C20%2C30', @parser.parse('http://example.org/?{-join|&|a,data}').value(defaults)
