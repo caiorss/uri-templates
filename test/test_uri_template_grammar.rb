@@ -83,7 +83,7 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     check "", "-neg|&|foo", "foo" => "fred"
     check "&", "-neg|&|foo", "foo" => []
     check "", "-neg|&|foo", "foo" => ["a"]
-    #check "", "-neg|&|foo,bar", "bar" => "a"
+    check "", "-neg|&|foo,bar", "bar" => "a"
     check "&", "-neg|&|foo,bar", "bar" => []
   end
   

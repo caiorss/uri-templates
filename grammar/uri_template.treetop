@@ -56,6 +56,7 @@ grammar UriTemplate
                   vars.split(',').each do |var| 
 	            if !env[var].to_s.blank?
 	              ret = "#{arg}"
+                      break
 	            end
 		  end
                   ret
@@ -68,12 +69,15 @@ grammar UriTemplate
 	  # value of arg, otherwise substitute the empty string.
       def exec
         lambda do |env, arg, vars| 
-		  if env[vars].to_s.blank?
-			"#{arg}"
-		  else
-		    ""
-		  end
-		end
+          ret = "#{arg}"
+          vars.split(',').each do |var|
+            if !env[var].to_s.blank?
+              ret = ""
+              break
+            end
+          end
+          ret
+        end
       end
     }
     / 
