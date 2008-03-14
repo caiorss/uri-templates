@@ -97,19 +97,20 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     assert_equal "http://example.org/news/joe/", @parser.parse("http://example.org/news/{id}/").value("id" => "joe")
   end
   
-  #                   +----------+--------------------+
-  #                   | Name     | Value              |
-  #                   +----------+--------------------+
-  #                   | a        | foo                |
-  #                   | b        | bar                |
-  #                   | data     | 10,20,30           |
-  #                   | points   | ["10","20", "30"]  |
-  #                   | list0    | []                 |
-  #                   | str0     |                    |
-  #                   | reserved | :/?#[]@!$&'()*+,;= |
-  #                   | u        | \u2654\u2655       |
-  #                   | a_b      | baz                |
-  #                   +----------+--------------------+
+  # +----------+--------------------+
+  # | Name     | Value              |
+  # +----------+--------------------+
+  # | a        | foo                |
+  # | b        | bar                |
+  # | data     | 10,20,30           |
+  # | points   | ["10","20", "30"]  |
+  # | list0    | []                 |
+  # | str0     |                    |
+  # | reserved | :/?#[]@!$&'()*+,;= |
+  # | u        | \u2654\u2655       |
+  # | a_b      | baz                |
+  # +----------+--------------------+
+  #
   # The name 'foo' has not been defined, the value of 'str0' is the empty
   # string, and both list0 and points are lists.  The variable 'u' is a
   # string of two unicode characters, the WHITE CHESS KING (0x2654) and

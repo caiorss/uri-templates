@@ -1,6 +1,4 @@
 #--
-# $Id$
-#
 # Copyright (C) 2007, 2008 by Stefan Saasen <s@juretta.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining
@@ -28,12 +26,11 @@ require 'cgi'
 
 Dir[File.join(File.dirname(__FILE__), 'uri_template/**/*.rb')].sort.each { |lib| require lib }
 
-
 module UriTemplate
   class Encoder
     RESERVED = %r{:/?#\[\]@!$&'()\*\+,;=}
-    class << self
     
+    class << self
       def unreserved(c)
         (c >= ?a and c <= ?z) or (c >= ?A and c <= ?Z) or (c >= ?0 and c <= ?9) or (c.chr !~ RESERVED)
       end

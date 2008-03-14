@@ -1,3 +1,7 @@
+#  Created by Stefan Saasen.
+#  Copyright (c) 2008. All rights reserved.
+#
+# ! This file is generated from 
 module UriTemplate
   include Treetop::Runtime
 
