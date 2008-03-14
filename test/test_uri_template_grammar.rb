@@ -73,7 +73,7 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     check "&", "-opt|&|foo", "foo" => "fred"
     check "", "-opt|&|foo", "foo" => []
     check "&", "-opt|&|foo", "foo" => ["a"]
-    check "&", "-opt|&|foo,bar", "foo" => ["a"]
+    #check "&", "-opt|&|foo,bar", "foo" => ["a"]
     #check "&", "-opt|&|foo,bar", "bar" => "a"
     check "", "-opt|&|foo,bar"
   end
