@@ -93,7 +93,7 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
   end
   
   def test_misc
-    #assert_equal "http://www.google.com/notebook/feeds/joe?",  @parser.parse("http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}{-opt|/-/|categories}{-listjoin|/|categories}?{-join|&|updated-min,updated-max,alt,start-index,max-results,entryID,orderby}").value("userID" => "joe")
+    assert_equal "http://www.google.com/notebook/feeds/joe?",  @parser.parse("http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}{-opt|/-/|categories}{-listjoin|/|categories}?{-join|&|updated-min,updated-max,alt,start-index,max-results,entryID,orderby}").value("userID" => "joe")
     assert_equal "http://example.org/news/joe/", @parser.parse("http://example.org/news/{id}/").value("id" => "joe")
   end
   
