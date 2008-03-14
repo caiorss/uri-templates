@@ -1,5 +1,9 @@
 require 'rubygems'
 require 'treetop'
+$:.unshift(File.expand_path(File.join(File.dirname(__FILE__), './')))
+$:.uniq!
+require 'uri_template/version'
+require 'uri_template/grammar'
 
 require 'cgi'
 
@@ -44,13 +48,3 @@ module UriTemplate
   end
 end
 
-
-
-require File.dirname(__FILE__) + '/grammar'
-
-
-class UriPart < Treetop::Runtime::SyntaxNode
-  def value
-    text_value
-  end
-end

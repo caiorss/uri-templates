@@ -4,7 +4,8 @@ require File.dirname(__FILE__) + '/../lib/uri_template'
 
 FIXTURES = File.dirname(__FILE__) + "/fixtures"
 
-Treetop.load File.dirname(__FILE__) + '/../grammar/uri_template'
+#Treetop.load File.dirname(__FILE__) + '/../grammar/uri_template'
+
 
 def read_fixture(f)
   File.read(File.join(FIXTURES, f))

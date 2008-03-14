@@ -14,4 +14,20 @@ Hoe.new('uri_templates', UriTemplate::VERSION) do |p|
   p.changes = p.paragraphs_of('History.txt', 0..1).join("\n\n")
 end
 
+desc "Create the UriTemplate parser from the Treetop grammar"
+task :generate_parser do
+  sh 'tt grammar/uri_template.treetop -o lib/uri_template/grammar.rb'
+end
+
+desc 'Measures test coverage'
+task :coverage do
+  rm_f "coverage"
+  rm_f "coverage.data"
+  rcov = "rcov --aggregate coverage.data --text-summary -o coverage -Ilib"
+  system("#{rcov} test/test_*.rb")
+  system("open coverage/index.html") if PLATFORM['darwin']
+  rm_f "coverage"
+end
+
+
 # vim: syntax=Ruby
