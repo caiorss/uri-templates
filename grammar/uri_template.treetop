@@ -51,13 +51,15 @@ grammar UriTemplate
 	      # If one or more of the variables are defined and non-empty then
 	   	  # substitute the value of 'arg', otherwise substitute the empty string.
 	      def exec
-	        lambda do |env, arg, vars| 
-			  if !env[vars].to_s.blank?
-				"#{arg}"
-			  else
-			    ""
-			  end
-			end
+	        lambda do |env, arg, vars|
+                  ret = ''
+                  vars.split(',').each do |var| 
+	            if !env[var].to_s.blank?
+	              ret = "#{arg}"
+	            end
+		  end
+                  ret
+                end
 	      end
 	    }
     / 
