@@ -2,7 +2,7 @@ module UriTemplate
   include Treetop::Runtime
 
   def root
-    @root || :uri_template
+    @root ||= :uri_template
   end
 
   module UriTemplate0
