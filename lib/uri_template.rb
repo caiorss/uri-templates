@@ -47,5 +47,27 @@ module UriTemplate
       end
     end
   end
+  
+  class URI
+    
+    def initialize(tmpl)
+      @tmpl, @parser = tmpl, UriTemplateParser.new
+      yield self if block_given?
+    end
+    
+    def replace(vars = {})
+      puts @parser.parse(@tmpl).value(vars)
+    end
+    
+  end
+  
 end
 
+if __FILE__ == $0
+  UriTemplate::URI.new(DATA.read) do |u|
+    u.replace(:userID => "stefan")
+  end
+end
+
+__END__
+http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}{-opt|/-/|categories}{-listjoin|/|categories}?{-join|&|updated-min,updated-max,alt,start-index,max-results,entryID,orderby}

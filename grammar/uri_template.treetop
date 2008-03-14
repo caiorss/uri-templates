@@ -3,7 +3,6 @@ grammar UriTemplate
   rule uri_template
     uri_element more_elements:(uri_element)* {
       def value(env={})
-		#raise more_elements.elements.inspect
         uri_element.value(env) << more_elements.elements.map{|el| el.value(env)}.join
       end
     }
@@ -14,32 +13,28 @@ grammar UriTemplate
   end
 
   rule expansion
-    '{' 
-	c:(
-		var
-		/
-		operator
-	) 
-	'}'
-	 {
-        def value(env = {})
-	  if c.respond_to? :value
-	    c.value(env)
-	  else
-	    c.interval.to_s + "<>"
-	  end
-        end
+    '{'
+   c:(
+      var
+      /
+      operator
+   ) 
+   '}'
+    {
+      def value(env = {})
+        c.value(env)
+      end
       } 
   end
 
   rule uri_part
     (unreserved / reserved / pct_encoded) {
-          def value(env = {})
-            text_value
-          end
-        }
+      def value(env = {})
+        text_value
+      end
+    }
   end
- 
+
   rule arg
     (reserved / unreserved / pct_encoded)*
   end
@@ -47,25 +42,25 @@ grammar UriTemplate
   rule op
     (
     'opt' {
-	      # If one or more of the variables are defined and non-empty then
-	   	  # substitute the value of 'arg', otherwise substitute the empty string.
-	      def exec
-	        lambda do |env, arg, vars|
-                  ret = ''
-                  vars.split(',').each do |var| 
-	            if !env[var].to_s.blank?
-	              ret = "#{arg}"
-                      break
-	            end
-		  end
-                  ret
-                end
-	      end
-	    }
+         # If one or more of the variables are defined and non-empty then
+           # substitute the value of 'arg', otherwise substitute the empty string.
+         def exec
+           lambda do |env, arg, vars|
+             ret = ''
+             vars.split(',').each do |var| 
+               if !env[var].to_s.blank?
+                 ret = "#{arg}"
+                 break
+               end
+             end
+             ret
+           end
+         end
+       }
     / 
     'neg' {
-	  # If all of the variables are un-defined or empty then substitute the
-	  # value of arg, otherwise substitute the empty string.
+     # If all of the variables are un-defined or empty then substitute the
+     # value of arg, otherwise substitute the empty string.
       def exec
         lambda do |env, arg, vars| 
           ret = "#{arg}"
@@ -81,85 +76,84 @@ grammar UriTemplate
     }
     / 
     'prefix' {
-	  # The prefix operator MUST only have one variable in its expansion.  If
-	  # the variable is defined and non-empty then substitute the value of
-	  # arg followed by the value of the variable, otherwise substitute the
-	  # empty string.
+     # The prefix operator MUST only have one variable in its expansion.  If
+     # the variable is defined and non-empty then substitute the value of
+     # arg followed by the value of the variable, otherwise substitute the
+     # empty string.
       def exec
         lambda do |env, prefix, vars| 
-                  v = env[vars]
-                  if vars =~ /([^=]+)=([^=]+)/
-                    var, default = $1.dup, $2.dup
-                    v = env[var]
-                    v = default if v.to_s.blank?
-                  end
-
-		  !v.blank? ? "#{prefix}#{UriTemplate::Encoder.encode(v)}" : ""
-		end
+          v = env[vars]
+          if vars =~ /([^=]+)=([^=]+)/
+            var, default = $1.dup, $2.dup
+            v = env[var]
+            v = default if v.to_s.blank?
+          end
+          !v.blank? ? "#{prefix}#{UriTemplate::Encoder.encode(v)}" : ""
+        end
       end
     } 
     / 
     'append' {
-	  # The append operator MUST only have one variable in its expansion.  If
-	  # the variable is defined and non-empty then substitute the value of
-	  # the variable followed by the value of arg, otherwise substitute the
-	  # empty string.
+     # The append operator MUST only have one variable in its expansion.  If
+     # the variable is defined and non-empty then substitute the value of
+     # the variable followed by the value of arg, otherwise substitute the
+     # empty string.
       def exec
         lambda do |env, append, vars|
-                  v = env[vars]
-                  if vars =~ /([^=]+)=([^=]+)/
-                    var, default = $1.dup, $2.dup
-                    v = env[var]
-                    v = default if v.to_s.blank?
-                  end  
-		  if v
-			val = UriTemplate::Encoder.encode(v)
-			!val.blank? ? "#{val}#{append}" : ""
-		  else
-		    ''
-		  end
-		end
+          v = env[vars]
+          if vars =~ /([^=]+)=([^=]+)/
+            var, default = $1.dup, $2.dup
+            v = env[var]
+            v = default if v.to_s.blank?
+          end  
+          if v
+            val = UriTemplate::Encoder.encode(v)
+            !val.blank? ? "#{val}#{append}" : ""
+          else
+            ''
+          end
+        end
       end
     } 
     / 
     'join' {
-	  # For each variable that is defined and non-empty create a keyvalue
-	  # string that is the concatenation of the variable name, "=", and the
-	  # variable value.  Concatenate more than one keyvalue string with
-	  # intervening values of arg to create the substitution value.
-	  def exec
+     # For each variable that is defined and non-empty create a keyvalue
+     # string that is the concatenation of the variable name, "=", and the
+     # variable value.  Concatenate more than one keyvalue string with
+     # intervening values of arg to create the substitution value.
+     def exec
         lambda do |env, joinop, vars| 
-		  vars.split(',').map do |var|
-                    v = env[var]
-                    if var =~ /([^=]+)=([^=]+)/
-                      var, default = $1.dup, $2.dup
-                      v = env[var]
-                      v = default if v.to_s.blank?
-                    end
-		    "#{var}=#{UriTemplate::Encoder.encode(v)}" if v
-		  end.compact.join(joinop)
-		end
-	  end
-	}
+          vars.split(',').map do |var|
+          v = env[var]
+          if var =~ /([^=]+)=([^=]+)/
+            var, default = $1.dup, $2.dup
+            v = env[var]
+            v = default if v.to_s.blank?
+          end
+          "#{var}=#{UriTemplate::Encoder.encode(v)}" if v
+        end.compact.join(joinop)
+      end
+     end
+   }
     / 
     'listjoin' {
-	  # The listjoin operator MUST have only one variable in its expansion
-	  # and that variable must be a list.  If the list is non-empty then
-	  # substitute the concatenation of all the list members with intevening
-	  # values of arg.
+     # The listjoin operator MUST have only one variable in its expansion
+     # and that variable must be a list.  If the list is non-empty then
+     # substitute the concatenation of all the list members with intevening
+     # values of arg.
       #
-	  # The result of substitution MUST match the URI-reference rule and
-	  # SHOULD also match any known rules for the scheme of the resulting
-	  # URI.
-	  def exec
-            lambda do |env, joinop, vars|
-              return "" unless env[vars].respond_to? :each
-	      env[vars].map do |v|
-                "#{UriTemplate::Encoder.encode(v)}" if v
-              end.compact.join(joinop)
-	    end
-	  end
-	}
+     # The result of substitution MUST match the URI-reference rule and
+     # SHOULD also match any known rules for the scheme of the resulting
+     # URI.
+     def exec
+       lambda do |env, joinop, vars|
+         return "" unless env[vars].respond_to? :each
+         env[vars].map do |v|
+           "#{UriTemplate::Encoder.encode(v)}" if v
+         end.compact.join(joinop)
+       end
+     end
+   }
     )
   end
 
@@ -167,6 +161,43 @@ grammar UriTemplate
     var ("," var)*
   end
   
+  rule vardefault
+    (unreserved / pct_encoded)*  
+  end
+
+  rule var
+    varname defaults:('=' vardefault)* {
+      def value(env={} )
+        return UriTemplate::Encoder.encode(env[name]) if env[name]
+        defaults.text_value.gsub(/=/, '')
+      end
+        
+      def name
+        varname.text_value
+      end
+    }
+  end
+
+  rule operator
+    "-" op "|" arg "|" vars { 
+      def value(env={})
+        op.exec.call(env, arg.text_value, vars.text_value) # if op.respond_to?(:exec)
+      end
+    }
+  end
+  
+  rule varname
+    [a-zA-Z0-9] [a-zA-Z0-9_.-]* 
+  end
+
+  rule alpha
+    [A-Za-z_]
+  end
+
+  rule alphanumeric
+    alpha / [0-9]
+  end
+
   # see http://www.ietf.org/rfc/rfc3986.txt
   rule unreserved
     alphanumeric / "-" / "." / "_" / "~"
@@ -192,44 +223,6 @@ grammar UriTemplate
 
   rule sub_delims
     "!" / "$" / "&" / "'" / "(" / ")" / "*" / "+" / "," / ";" / "="
-  end
-
-
-  rule vardefault
-    (unreserved / pct_encoded)*  
-  end
-
-  rule var
-    varname defaults:('=' vardefault)* {
-        def value(env={} )
-		  return UriTemplate::Encoder.encode(env[name]) if env[name] # UriTemplate::Encoder.encode(env[name])
-		  #defaults.elements[0].text_value if defaults.elements.size > 0
-		  defaults.text_value.gsub(/=/, '')
-        end
-        def name
-		  varname.text_value
-        end
-    }
-  end
-
-  rule operator
-    "-" op "|" arg "|" vars { 
-      def value(env={})
-        op.exec.call(env, arg.text_value, vars.text_value) # if op.respond_to?(:exec)
-      end
-    }
-  end
-  
-  rule varname
-    [a-zA-Z0-9] [a-zA-Z0-9_.-]* 
-  end
-
-  rule alpha
-    [A-Za-z_]
-  end
-
-  rule alphanumeric
-    alpha / [0-9]
   end
 
 end
