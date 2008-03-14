@@ -41,6 +41,7 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
   end
   
   def test_listjoin
+    check "a&b&c", "-listjoin|&|bar", 'bar' => ['a', 'b', 'c']
     check "", "-listjoin|/|foo"
     check "a/b", "-listjoin|/|foo", "foo" => ['a', 'b']
     check "ab", "-listjoin||foo", "foo" => ['a', 'b']
@@ -86,9 +87,9 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     check "&", "-neg|&|foo,bar", "bar" => []
   end
   
-  def test_ws
-    #check "%20", "foo", "foo" => ' '
-    #check "%26&%26&%7C&_", "-listjoin|&|foo", "foo" => ["&", "&", "|", "_"]
+  def test_special
+    check "%20", "foo", "foo" => ' '
+    check '%26&%26&%7C&_', "-listjoin|&|foo", 'foo' => ["&", "&", "|", "_"]
   end
   
   def test_misc
@@ -122,7 +123,7 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
       'list0' => [],
       'str0' => '',
       'reserved' => ':/?#[]@!$&\'()*+,;=',
-      'u' => '\u2654\u2655',
+      'u' => '♔♕',
       'a_b' => 'baz'
     }
     assert_equal 'http://example.org/?q=foo', @parser.parse('http://example.org/?q={a}').value(defaults)
@@ -149,7 +150,7 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     assert_equal '/foo/data#bar', @parser.parse('/{-append|/|a}{-opt|data|points}{-neg|@|a}{-prefix|#|b}').value(defaults)
     
     # UTF-8
-    #assert_equal 'http://example.org/q=%E2%99%94%E2%99%95', @parser.parse('http://example.org/q={u}/').value(defaults)
+    assert_equal 'http://example.org/q=%E2%99%94%E2%99%95/', @parser.parse('http://example.org/q={u}/').value(defaults)
     
     # join
     assert_equal 'http://example.org/?a=foo&data=10%2C20%2C30', @parser.parse('http://example.org/?{-join|&|a,data}').value(defaults)

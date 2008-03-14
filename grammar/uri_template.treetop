@@ -33,7 +33,7 @@ grammar UriTemplate
   end
 
   rule uri_part
-    (alphanumeric+ / ':' / '/' / '.' / '?' / '&' / '=') {
+    (unreserved / reserved / pct_encoded) {
           def value(env = {})
             text_value
           end
@@ -94,7 +94,7 @@ grammar UriTemplate
                     v = default if v.to_s.blank?
                   end
 
-		  !v.blank? ? "#{prefix}#{CGI.escape(v)}" : ""
+		  !v.blank? ? "#{prefix}#{UriTemplate::Encoder.encode(v)}" : ""
 		end
       end
     } 
@@ -113,7 +113,7 @@ grammar UriTemplate
                     v = default if v.to_s.blank?
                   end  
 		  if v
-			val = CGI.escape(v)
+			val = UriTemplate::Encoder.encode(v)
 			!val.blank? ? "#{val}#{append}" : ""
 		  else
 		    ''
@@ -136,7 +136,7 @@ grammar UriTemplate
                       v = env[var]
                       v = default if v.to_s.blank?
                     end
-		    "#{var}=#{CGI.escape(v)}" if v
+		    "#{var}=#{UriTemplate::Encoder.encode(v)}" if v
 		  end.compact.join(joinop)
 		end
 	  end
@@ -152,14 +152,12 @@ grammar UriTemplate
 	  # SHOULD also match any known rules for the scheme of the resulting
 	  # URI.
 	  def exec
-        lambda do |env, joinop, vars|
-          return "" unless env[vars].respond_to? :each
-		  env[vars].each do |v|
-		  	if env[v]
-              "#{v}=#{CGI.escape(env[v])}"
-		  	end
-		  end.join(joinop)
-		end
+            lambda do |env, joinop, vars|
+              return "" unless env[vars].respond_to? :each
+	      env[vars].map do |v|
+                "#{UriTemplate::Encoder.encode(v)}" if v
+              end.compact.join(joinop)
+	    end
 	  end
 	}
     )
@@ -204,7 +202,7 @@ grammar UriTemplate
   rule var
     varname defaults:('=' vardefault)* {
         def value(env={} )
-		  return CGI.escape(env[name]) if env[name] # CGI.escape(env[name])
+		  return UriTemplate::Encoder.encode(env[name]) if env[name] # UriTemplate::Encoder.encode(env[name])
 		  #defaults.elements[0].text_value if defaults.elements.size > 0
 		  defaults.text_value.gsub(/=/, '')
         end
