@@ -4,6 +4,12 @@ require 'treetop'
 require 'uri'
 require 'cgi'
 
+class NilClass
+  def blank?
+    true
+  end
+end
+
 class String
   def blank?
     nil? || size < 1

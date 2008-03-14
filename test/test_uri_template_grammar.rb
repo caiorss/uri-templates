@@ -1,7 +1,5 @@
 require File.dirname(__FILE__) + '/test_helper.rb'
  
-
- 
 class TestUriTemplateGrammar < Test::Unit::TestCase
   
   def check(expected, template, values = {})
@@ -53,19 +51,21 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
   
   def test_join
     check "", "-join|/|foo"
-    #check "", "-join|/|foo,bar"
-    #check "", "-join|&|q,num"
-    #check "foo=wilma", "-join|#|foo=wilma"
-    #check "foo=wilma", "-join|#|foo=wilma,bar"
+    check "", "-join|/|foo,bar"
+    check "", "-join|&|q,num"
+    check "foo=wilma", "-join|#|foo=wilma"
+    check "foo=wilma", "-join|#|foo=wilma,bar"
+    # The following test (taken from the python implementation) seems to be wrong?
     #check "bar=barney#foo=wilma", "-join|#|foo=wilma,bar=barney"
-    #check "foo=barney", "-join|&?|foo=wilma", "foo" =>  "barney"
+    check "foo=wilma#bar=barney", "-join|#|foo=wilma,bar=barney"
+    check "foo=barney", "-join|&?|foo=wilma", "foo" =>  "barney"
   end
 
   def test_prefix
-    #check "", "-prefix|&|foo"
-    #check "&wilma", "-prefix|&|foo=wilma"
-    #check "wilma", "-prefix||foo=wilma"
-    #check "&barney", "-prefix||foo=wilma", "foo" =>  "barney"        
+    check "", "-prefix|&|foo"
+    check "&wilma", "-prefix|&|foo=wilma"
+    check "wilma", "-prefix||foo=wilma"
+    check "&barney", "-prefix|&|foo=wilma", "foo" =>  "barney"        
   end
 
   def test_opt

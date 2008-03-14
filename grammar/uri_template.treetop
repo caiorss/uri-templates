@@ -82,10 +82,14 @@ grammar UriTemplate
 	  # empty string.
       def exec
         lambda do |env, prefix, vars| 
-		  if env[vars]
-			val = CGI.escape(env[vars])
-			!val.blank? ? "#{prefix}#{val}" : ""
-		  end
+                  v = env[vars]
+                  if vars =~ /([^=]+)=([^=]+)/
+                    var, default = $1.dup, $2.dup
+                    v = env[var]
+                    v = default if v.to_s.blank?
+                  end
+
+		  !v.blank? ? "#{prefix}#{CGI.escape(v)}" : ""
 		end
       end
     } 
@@ -120,9 +124,15 @@ grammar UriTemplate
 	  # intervening values of arg to create the substitution value.
 	  def exec
         lambda do |env, joinop, vars| 
-		  vars.split(',').map do |v|
-		  	"#{v}=#{CGI.escape(env[v])}" if env[v]
-		  end.join(joinop)
+		  vars.split(',').map do |var|
+                    v = env[var]
+                    if var =~ /([^=]+)=([^=]+)/
+                      var, default = $1.dup, $2.dup
+                      v = env[var]
+                      v = default if v.to_s.blank?
+                    end
+		    "#{var}=#{CGI.escape(v)}" if v
+		  end.compact.join(joinop)
 		end
 	  end
 	}
