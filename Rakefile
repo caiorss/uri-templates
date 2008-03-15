@@ -2,16 +2,32 @@
 
 require 'rubygems'
 require 'hoe'
-require './lib/uri_template/version.rb'
+require 'rcov/rcovtask'
+require 'rake/clean'
+require File.join(File.dirname(__FILE__), 'lib', 'uri_template', 'version')
 
-Hoe.new('uri_templates', UriTemplate::VERSION::STRING) do |p|
-  p.rubyforge_name = 'uri_templates'
+class Hoe
+  def extra_deps 
+    @extra_deps.reject { |x| Array(x).first == 'hoe' } 
+  end 
+end
+
+# clean files and directories
+CLEAN.include ['**/.*.sw?', '*.gem', '.config', 'coverage']
+
+Hoe.new('uri-templates', UriTemplate::VERSION::STRING) do |p|
+  p.rubyforge_name = 'uri-templates'
   p.author = 'Stefan Saasen'
   p.email = 's@juretta.com'
-  # p.summary = 'FIX'
+  p.need_tar = false
+  p.clean_globs = CLEAN
+  p.rsync_args << " -z"  
   p.description = p.paragraphs_of('README.txt', 2..5).join("\n\n")
   p.url = p.paragraphs_of('README.txt', 0).first.split(/\n/)[1..-1]
   p.changes = p.paragraphs_of('History.txt', 0..1).join("\n\n")
+  #p.spec_extras = {:dependencies => []}   # - A hash of extra values to set in the gemspec.
+  p.remote_rdoc_dir = ''
+  p.extra_deps = [['treetop', '>=1.2.3']]
 end
 
 desc "Create the UriTemplate parser from the Treetop grammar"
@@ -20,14 +36,12 @@ task :generate_parser do
 end
 
 desc 'Measures test coverage'
-task :coverage do
-  rm_f "coverage"
-  rm_f "coverage.data"
-  rcov = "rcov --aggregate coverage.data --text-summary -o coverage -Ilib"
-  system("#{rcov} test/test_*.rb")
-  system("open coverage/index.html") if PLATFORM['darwin']
-  rm_f "coverage"
+Rcov::RcovTask.new("coverage") do |t|
+  t.test_files = FileList['test/test_*.rb']
+  t.verbose = false
+  t.rcov_opts << "--test-unit-only"
+  t.ruby_opts << "-Ilib:ext/rcovrt" # in order to use this rcov
+  t.output_dir = "coverage"
 end
-
 
 # vim: syntax=Ruby

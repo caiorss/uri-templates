@@ -1,3 +1,5 @@
+#  Created by Stefan Saasen.
+#  Copyright (c) 2008. All rights reserved.
 require File.dirname(__FILE__) + '/test_helper.rb'
  
 class TestUriTemplateGrammar < Test::Unit::TestCase

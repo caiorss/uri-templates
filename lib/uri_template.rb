@@ -27,7 +27,7 @@ require 'cgi'
 Dir[File.join(File.dirname(__FILE__), 'uri_template/**/*.rb')].sort.each { |lib| require lib }
 
 module UriTemplate
-  class Encoder
+  class Encoder #:nodoc:
     RESERVED = %r{:/?#\[\]@!$&'()\*\+,;=}
     
     class << self
@@ -49,24 +49,22 @@ module UriTemplate
   end
   
   class URI
-    
+    # Create an instance based on tmpl
     def initialize(tmpl)
       @tmpl, @parser = tmpl, UriTemplateParser.new
-      yield self if block_given?
+      #yield self if block_given?
     end
     
+    # replace template placeholder with values in vars
     def replace(vars = {})
-      puts @parser.parse(@tmpl).value(vars)
+      @parser.parse(@tmpl).value(vars)
     end
-    
   end
-  
 end
 
 if __FILE__ == $0
-  UriTemplate::URI.new(DATA.read) do |u|
-    u.replace(:userID => "stefan")
-  end
+  u = UriTemplate::URI.new(DATA.read)
+  puts u.replace("userID" => "stefan")
 end
 
 __END__

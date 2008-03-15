@@ -1,32 +1,45 @@
-= uri-templates
-
-* FIX (url)
+= URI-Templates
+http://rubyforge.org/projects/uri-templates/
 
 == DESCRIPTION:
 
-FIX (describe your package)
+URI Templates are strings that contain embedded variables that are transformed into URIs 
+after embedded variables are substituted. This specification defines the structure and 
+syntax of URI Templates. 
 
-== FEATURES/PROBLEMS:
+Read more:
+* http://bitworking.org/projects/URI-Templates/
+* http://www.ibm.com/developerworks/web/library/wa-uri/
+* http://code.google.com/p/uri-templates/
 
-* FIX (list of features or problems)
+Bug-Tracker:
+* http://rubyforge.org/tracker/?atid=22376&group_id=5767&func=browse
+
+Source:
+ git clone git@github.com:juretta/uri-templates.git
 
 == SYNOPSIS:
-
-  FIX (code sample of usage)
-
-== REQUIREMENTS:
-
-* FIX (list of requirements)
-
+  require 'rubygems'
+  require 'uri_templates'
+  uri = UriTemplate::URI.new("http://example.org/{userid}").replace("userid" => "stefan")
+  print uri # => http://example.org/stefan
+  
+  ut = UriTemplate::URI.new("http://example.org/?d={-listjoin|,|points}&{-join|&|a,b}")
+  print ut.replace({
+    'a' => 'foo',
+    'b' => 'bar',
+    'points' => ["10","20","30"]
+  }) # => http://example.org/?d=10,20,30&a=foo&b=bar
+   
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+ sudo gem install uri-templates
 
 == LICENSE:
 
 (The MIT License)
 
-Copyright (c) 2008 Stefan
+Copyright (c) 2008 Stefan Saasen
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

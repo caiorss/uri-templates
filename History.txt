@@ -1,5 +1,5 @@
-=== 1.0.0 / 2008-03-10
+=== 0.1.0 / 2008-03-10
 
-* 1 major enhancement
-  * Birthday!
+* Initial release. Implements version 0.2 (draft-gregorio-uritemplate-02).
+  See: http://bitworking.org/projects/URI-Templates/draft-gregorio-uritemplate-02.txt
 
