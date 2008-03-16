@@ -37,7 +37,7 @@ module UriTemplate
     
       def encode_unreserved(c)
         return c if unreserved(c)
-        sprintf("%%%02X", c)   
+        "%%%02X" % c
       end
       
       def encode(str)
