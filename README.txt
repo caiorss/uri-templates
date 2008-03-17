@@ -16,7 +16,7 @@ Bug-Tracker:
 * http://rubyforge.org/tracker/?atid=22376&group_id=5767&func=browse
 
 Source:
- git clone git@github.com:juretta/uri-templates.git
+ git clone git://scm.juretta.com/uri-templates.git
 
 == SYNOPSIS:
   require 'rubygems'
