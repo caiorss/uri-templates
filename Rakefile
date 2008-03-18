@@ -4,7 +4,7 @@ require 'rubygems'
 require 'hoe'
 require 'rcov/rcovtask'
 require 'rake/clean'
-require File.join(File.dirname(__FILE__), 'lib', 'uri_template', 'version')
+require File.join(File.dirname(__FILE__), 'lib', 'uri', 'version')
 
 class Hoe
   def extra_deps 

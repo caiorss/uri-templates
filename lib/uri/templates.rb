@@ -24,7 +24,7 @@ require 'rubygems'
 require 'treetop'
 require 'cgi'
 
-Dir[File.join(File.dirname(__FILE__), 'uri_template/**/*.rb')].sort.each { |lib| require lib }
+Dir[File.join(File.dirname(__FILE__), '/**/*.rb')].sort.each { |lib| require lib unless lib.eql?(__FILE__) }
 
 module UriTemplate
   class Encoder #:nodoc:

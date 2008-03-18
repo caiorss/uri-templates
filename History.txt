@@ -1,3 +1,10 @@
+=== 0.2.0 / 2008-3-18
+* Changed lib directory structure to reflect the name of the gem.
+  use "require 'uri/templates'" instead of "require 'uri_template'"
+
+=== 0.1.1 / 2008-03-17
+* Changed git source URL
+
 === 0.1.0 / 2008-03-10
 
 * Initial release. Implements version 0.2 (draft-gregorio-uritemplate-02).

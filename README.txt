@@ -20,7 +20,7 @@ Source:
 
 == SYNOPSIS:
   require 'rubygems'
-  require 'uri_templates'
+  require 'uri/templates'
   uri = UriTemplate::URI.new("http://example.org/{userid}").replace("userid" => "stefan")
   print uri # => http://example.org/stefan
   

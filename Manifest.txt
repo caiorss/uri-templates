@@ -2,10 +2,10 @@ History.txt
 Manifest.txt
 README.txt
 Rakefile
-lib/uri_template.rb
-lib/uri_template/core_ext.rb
-lib/uri_template/grammar.rb
-lib/uri_template/version.rb
+lib/uri/templates.rb
+lib/uri/core_ext.rb
+lib/uri/grammar.rb
+lib/uri/version.rb
 test/test_helper.rb
 test/test_uri_template.rb
 test/test_uri_template_grammar.rb
