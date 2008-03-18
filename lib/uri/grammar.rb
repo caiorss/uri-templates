@@ -2,7 +2,7 @@ module UriTemplate
   include Treetop::Runtime
 
   def root
-    @root ||= :uri_template
+    @root || :uri_template
   end
 
   module UriTemplate0
@@ -95,11 +95,7 @@ module UriTemplate
 
   module Expansion1
     def value(env = {})
- if c.respond_to? :value
-   c.value(env)
- else
-   c.interval.to_s + "<>"
- end
+      c.value(env)
     end
   end
 
@@ -249,7 +245,7 @@ module UriTemplate
       lambda do |env, arg, vars|
         ret = ''
         vars.split(',').each do |var| 
-          if !env[var.to_s].to_s.blank?
+          if !env[var].to_s.blank?
             ret = "#{arg}"
             break
           end
@@ -266,7 +262,7 @@ module UriTemplate
        lambda do |env, arg, vars| 
          ret = "#{arg}"
          vars.split(',').each do |var|
-           if !env[var.to_s].to_s.blank?
+           if !env[var].to_s.blank?
              ret = ""
              break
            end
@@ -286,7 +282,7 @@ module UriTemplate
          v = env[vars]
          if vars =~ /([^=]+)=([^=]+)/
            var, default = $1.dup, $2.dup
-           v = env[var.to_s]
+           v = env[var]
            v = default if v.to_s.blank?
          end
          !v.blank? ? "#{prefix}#{UriTemplate::Encoder.encode(v)}" : ""
@@ -304,7 +300,7 @@ module UriTemplate
          v = env[vars]
          if vars =~ /([^=]+)=([^=]+)/
            var, default = $1.dup, $2.dup
-           v = env[var.to_s]
+           v = env[var]
            v = default if v.to_s.blank?
          end  
          if v
@@ -325,10 +321,10 @@ module UriTemplate
     def exec
        lambda do |env, joinop, vars| 
          vars.split(',').map do |var|
-         v = env[var.to_s]
+         v = env[var]
          if var =~ /([^=]+)=([^=]+)/
            var, default = $1.dup, $2.dup
-           v = env[var.to_s]
+           v = env[var]
            v = default if v.to_s.blank?
          end
          "#{var}=#{UriTemplate::Encoder.encode(v)}" if v
@@ -348,8 +344,8 @@ module UriTemplate
     # URI.
     def exec
       lambda do |env, joinop, vars|
-        return "" unless env[vars.to_s].respond_to? :each
-        env[vars.to_s].map do |v|
+        return "" unless env[vars].respond_to? :each
+        env[vars].map do |v|
           "#{UriTemplate::Encoder.encode(v)}" if v
         end.compact.join(joinop)
       end
@@ -568,7 +564,7 @@ module UriTemplate
 
   module Var2
     def value(env={} )
-      return UriTemplate::Encoder.encode(env[name.to_s]) if env[name.to_s]
+      return UriTemplate::Encoder.encode(env[name]) unless env[name].nil?
       defaults.text_value.gsub(/=/, '')
     end
       

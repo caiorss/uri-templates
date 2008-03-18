@@ -168,7 +168,7 @@ grammar UriTemplate
   rule var
     varname defaults:('=' vardefault)* {
       def value(env={} )
-        return UriTemplate::Encoder.encode(env[name]) if env[name]
+        return UriTemplate::Encoder.encode(env[name]) unless env[name].nil?
         defaults.text_value.gsub(/=/, '')
       end
         

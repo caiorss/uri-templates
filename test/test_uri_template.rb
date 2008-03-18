@@ -17,6 +17,7 @@ class TestUriTemplate < Test::Unit::TestCase
   def test_replace_types
     ut = UriTemplate::URI.new("http://example.org/{fixnum}/{bool}/{symbol}")
     assert_equal "http://example.org/1/true/sym", ut.replace("fixnum" => 1, "bool" => true, "symbol" => :sym)
+    assert_equal "http://example.org/1/false/sym", ut.replace("fixnum" => 1, "bool" => false, "symbol" => :sym)
   end
   
 end
