@@ -32,7 +32,7 @@ end
 
 desc "Create the UriTemplate parser from the Treetop grammar"
 task :generate_parser do
-  sh 'tt grammar/uri_template.treetop -o lib/uri_template/grammar.rb'
+  sh 'tt grammar/uri_template.treetop -o lib/uri/grammar.rb'
 end
 
 desc 'Measures test coverage'
