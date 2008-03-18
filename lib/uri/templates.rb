@@ -41,6 +41,7 @@ module UriTemplate
       end
       
       def encode(str)
+        str = str.to_s
         s = ""
         str.each_byte{|b| s << encode_unreserved(b)}
         CGI.escape(s).gsub("%7E", '~').gsub("+", "%20") unless str.blank?
