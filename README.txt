@@ -3,9 +3,9 @@ http://rubyforge.org/projects/uri-templates/
 
 == DESCRIPTION:
 
-URI Templates are strings that contain embedded variables that are transformed into URIs 
-after embedded variables are substituted. This specification defines the structure and 
-syntax of URI Templates. 
+URI Templates are strings that contain embedded variables that are transformed into URIs after embedded variables are substituted. 
+
+This specification defines the structure and syntax of URI Templates. 
 
 Read more:
 * http://bitworking.org/projects/URI-Templates/
