@@ -8,6 +8,22 @@ class TestUriTemplate < Test::Unit::TestCase
     assert_equal '%26', UriTemplate::Encoder.encode("&")
   end
   
+  def test_op
+    defaults = {
+      'a' => 'foo',
+      'b' => 'bar',
+      'data' => "10,20,30",
+      'points' => ["10","20","30"],
+      'list0' => [],
+      'str0' => '',
+      'reserved' => ':/?#[]@!$&\'()*+,;=',
+      'u' => '♔♕',
+      'a_b' => 'baz'
+    }
+    assert_equal '/&wilma/#bar', UriTemplate::URI.new('/{-prefix|&|foo=wilma}/{-prefix|#|b}').replace(defaults)
+    assert_equal '/foo/data#bar', UriTemplate::URI.new('/{-append|/|a}{-opt|data|points}{-neg|@|a}{-prefix|#|b}').replace(defaults)
+  end
+  
   def test_replace
     ut = UriTemplate::URI.new("http://example.org/{userid}")
     assert_equal "http://example.org/stefan", ut.replace("userid" => "stefan")
