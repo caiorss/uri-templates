@@ -1,6 +1,10 @@
 module UriTemplate
   include Treetop::Runtime
 
+  def initialize
+    @root = nil
+  end
+
   def root
     @root || :uri_template
   end
@@ -291,7 +295,7 @@ module UriTemplate
   end
 
   module Op3
-    # The append operator MUST only have one variable in its expansion.  If
+    # The suffix operator MUST only have one variable in its expansion.  If
     # the variable is defined and non-empty then substitute the value of
     # the variable followed by the value of arg, otherwise substitute the
     # empty string.
@@ -334,22 +338,19 @@ module UriTemplate
   end
 
   module Op5
-    # The listjoin operator MUST have only one variable in its expansion
-    # and that variable must be a list.  If the list is non-empty then
-    # substitute the concatenation of all the list members with intevening
-    # values of arg.
-     #
-    # The result of substitution MUST match the URI-reference rule and
-    # SHOULD also match any known rules for the scheme of the resulting
-    # URI.
-    def exec
-      lambda do |env, joinop, vars|
-        return "" unless env[vars].respond_to? :each
-        env[vars].map do |v|
-          "#{UriTemplate::Encoder.encode(v)}" if v
-        end.compact.join(joinop)
-      end
-    end
+    # 	The listjoin operator MUST have only one variable in its expansion
+    # and that variable must be a list.  More than one variable is an
+    # error.  If the list is non-empty then substitute the concatenation of
+    # all the list members with intervening values of arg.  If the list is
+    # empty or the variable is undefined them substitute the empty string.
+     def exec
+       lambda do |env, joinop, vars|
+         return "" unless env[vars].respond_to? :each
+         env[vars].map do |v|
+           "#{UriTemplate::Encoder.encode(v)}" if v
+         end.compact.join(joinop)
+       end
+     end
   end
 
   def _nt_op
@@ -394,12 +395,12 @@ module UriTemplate
         if r3
           r0 = r3
         else
-          if input.index('append', index) == index
+          if input.index('suffix', index) == index
             r4 = (SyntaxNode).new(input, index...(index + 6))
             r4.extend(Op3)
             @index += 6
           else
-            terminal_parse_failure('append')
+            terminal_parse_failure('suffix')
             r4 = nil
           end
           if r4
@@ -416,12 +417,12 @@ module UriTemplate
             if r5
               r0 = r5
             else
-              if input.index('listjoin', index) == index
-                r6 = (SyntaxNode).new(input, index...(index + 8))
+              if input.index('list', index) == index
+                r6 = (SyntaxNode).new(input, index...(index + 4))
                 r6.extend(Op5)
-                @index += 8
+                @index += 4
               else
-                terminal_parse_failure('listjoin')
+                terminal_parse_failure('list')
                 r6 = nil
               end
               if r6

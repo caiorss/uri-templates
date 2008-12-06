@@ -1,7 +1,7 @@
 #  Created by Stefan Saasen.
 #  Copyright (c) 2008. All rights reserved.
 require File.dirname(__FILE__) + '/test_helper.rb'
- 
+
 class TestUriTemplateGrammar < Test::Unit::TestCase
   
   def check(expected, template, values = {})
@@ -21,7 +21,7 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     assert_not_nil @parser.parse('http://www.google.com/notebook/feeds/{userID}')
     assert_not_nil @parser.parse('http://www.google.com/notebook/feeds/{-prefix|/notebooks/|notebookID}')
     assert_not_nil @parser.parse('http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}')
-    assert_not_nil @parser.parse('http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}{-opt|/-/|categories}{-listjoin|/|categories}?{-join|&|updated-min,updated-max,alt,start-index,max-results,entryID,orderby}')
+    assert_not_nil @parser.parse('http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}{-opt|/-/|categories}{-list|/|categories}?{-join|&|updated-min,updated-max,alt,start-index,max-results,entryID,orderby}')
   end
   
   def test_replace
@@ -36,19 +36,19 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     check "barney", "foo=wilma", "foo" => "barney"
   end
   
-  def test_append
-    check "", "-append|/|foo"
-    check "wilma#", "-append|#|foo=wilma"
-    check "barney&?", "-append|&?|foo=wilma", "foo" =>  "barney"
+  def test_suffix
+    check "", "-suffix|/|foo"
+    check "wilma#", "-suffix|#|foo=wilma"
+    check "barney&?", "-suffix|&?|foo=wilma", "foo" =>  "barney"
   end
   
-  def test_listjoin
-    check "a&b&c", "-listjoin|&|bar", 'bar' => ['a', 'b', 'c']
-    check "", "-listjoin|/|foo"
-    check "a/b", "-listjoin|/|foo", "foo" => ['a', 'b']
-    check "ab", "-listjoin||foo", "foo" => ['a', 'b']
-    check "a", "-listjoin|/|foo", "foo" => ['a']
-    check "", "-listjoin|/|foo", "foo" => []
+  def test_list
+    check "a&b&c", "-list|&|bar", 'bar' => ['a', 'b', 'c']
+    check "", "-list|/|foo"
+    check "a/b", "-list|/|foo", "foo" => ['a', 'b']
+    check "ab", "-list||foo", "foo" => ['a', 'b']
+    check "a", "-list|/|foo", "foo" => ['a']
+    check "", "-list|/|foo", "foo" => []
   end
   
   def test_join
@@ -91,11 +91,11 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
   
   def test_special
     check "%20", "foo", "foo" => ' '
-    check '%26&%26&%7C&_', "-listjoin|&|foo", 'foo' => ["&", "&", "|", "_"]
+    check '%26&%26&%7C&_', "-list|&|foo", 'foo' => ["&", "&", "|", "_"]
   end
   
   def test_misc
-    assert_equal "http://www.google.com/notebook/feeds/joe?",  @parser.parse("http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}{-opt|/-/|categories}{-listjoin|/|categories}?{-join|&|updated-min,updated-max,alt,start-index,max-results,entryID,orderby}").value("userID" => "joe")
+    assert_equal "http://www.google.com/notebook/feeds/joe?",  @parser.parse("http://www.google.com/notebook/feeds/{userID}{-prefix|/notebooks/|notebookID}{-opt|/-/|categories}{-list|/|categories}?{-join|&|updated-min,updated-max,alt,start-index,max-results,entryID,orderby}").value("userID" => "joe")
     assert_equal "http://example.org/news/joe/", @parser.parse("http://example.org/news/{id}/").value("id" => "joe")
   end
   
@@ -117,7 +117,7 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
   # string, and both list0 and points are lists.  The variable 'u' is a
   # string of two unicode characters, the WHITE CHESS KING (0x2654) and
   # the WHITE CHESS QUEEN (0x2655).
-  def test_draft
+  def test_draft_0_2
     defaults = {
       'a' => 'foo',
       'b' => 'bar',
@@ -126,7 +126,8 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
       'list0' => [],
       'str0' => '',
       'reserved' => ':/?#[]@!$&\'()*+,;=',
-      'u' => '♔♕',
+      #'u' => '♔♕',
+      'u' => "#{Unicode::U2654}#{Unicode::U2655}",
       'a_b' => 'baz'
     }
     assert_equal 'http://example.org/?q=foo', @parser.parse('http://example.org/?q={a}').value(defaults)
@@ -144,13 +145,13 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     assert_equal './', @parser.parse('./{-prefix|#|str0}').value(defaults)
     
     # append, prefix
-    assert_equal '/foo/#bar', @parser.parse('/{-append|/|a}{-prefix|#|b}').value(defaults)
+    assert_equal '/foo/#bar', @parser.parse('/{-suffix|/|a}{-prefix|#|b}').value(defaults)
     
     # neg
     assert_equal '/', @parser.parse('/{-neg|@|a}').value(defaults)
     
     # append, opt, neg, prefix
-    assert_equal '/foo/data#bar', @parser.parse('/{-append|/|a}{-opt|data|points}{-neg|@|a}{-prefix|#|b}').value(defaults)
+    assert_equal '/foo/data#bar', @parser.parse('/{-suffix|/|a}{-opt|data|points}{-neg|@|a}{-prefix|#|b}').value(defaults)
     
     # UTF-8
     assert_equal 'http://example.org/q=%E2%99%94%E2%99%95/', @parser.parse('http://example.org/q={u}/').value(defaults)
@@ -158,12 +159,59 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
     # join
     assert_equal 'http://example.org/?a=foo&data=10%2C20%2C30', @parser.parse('http://example.org/?{-join|&|a,data}').value(defaults)
     
-    # listjoin
-    assert_equal 'http://example.org/?d=10,20,30&a=foo&b=bar', @parser.parse('http://example.org/?d={-listjoin|,|points}&{-join|&|a,b}').value(defaults)    
-    assert_equal 'http://example.org/?d=&', @parser.parse('http://example.org/?d={-listjoin|,|list0}&{-join|&|foo}').value(defaults)
+    # list
+    assert_equal 'http://example.org/?d=10,20,30&a=foo&b=bar', @parser.parse('http://example.org/?d={-list|,|points}&{-join|&|a,b}').value(defaults)    
+    assert_equal 'http://example.org/?d=&', @parser.parse('http://example.org/?d={-list|,|list0}&{-join|&|foo}').value(defaults)
     
     # misc
     assert_equal 'http://example.org/foobar/baz', @parser.parse('http://example.org/{a}{b}/{a_b}').value(defaults)
     assert_equal 'http://example.org/foo/-/foo/', @parser.parse('http://example.org/{a}{-prefix|/-/|a}/').value(defaults)
+  end
+  
+  # +---------+----------------------------------+
+  # | Name    | Value                            |
+  # +---------+----------------------------------+
+  # | foo     | \u03d3                           |
+  # | bar     | fred                             |
+  # | baz     | 10,20,30                         |
+  # | qux     | ["10","20","30"]                 |
+  # | corge   | []                               |
+  # | grault  |                                  |
+  # | garply  | a/b/c                            |
+  # | waldo   | ben & jerrys                     |
+  # | fred    | ["fred", "", "wilma"]            |
+  # | plugh   | ["\u017F\u0307", "\u0073\u0307"] |
+  # | 1-a_b.c | 200                              |
+  # +---------+----------------------------------+  
+  def test_draft_0_3
+    defaults = {
+      'foo' => Unicode::U03d3,
+      'bar' => 'fred',
+      'baz' => '10,20,30',
+      'qux' => %w(10 20 30),
+      'corge' => [],
+      'grault' => nil,
+      'garply' => 'a/b/c',
+      'waldo' => 'ben & jerrys',
+      'fred' => ["fred", "", "wilma"],
+      'plugh' => ["#{Unicode::U017F}#{Unicode::U0307}", "#{Unicode::U0073}#{Unicode::U0307}"],
+      '1-a_b.c' => 200
+    }
+
+    [
+      ['http://example.org/?q=fred', 'http://example.org/?q={bar}'],
+      #['http://example.org/?foo=%CE%8E&bar=fred&baz=10%2C20%2C30', 'http://example.org/?{-join|&|foo,bar,xyzzy,baz}'],
+      ['/', '/{xyzzy}'],
+      ['http://example.org/?d=10,20,30', 'http://example.org/?d={-list|,|qux}'],
+      ['http://example.org/?d=10&d=20&d=30', 'http://example.org/?d={-list|&d=|qux}'],
+      ['http://example.org/fredfred/a%2Fb%2Fc', 'http://example.org/{bar}{bar}/{garply}'],
+#      ['http://example.org/fred/fred//wilma', 'http://example.org/{bar}{-prefix|/|fred}'],
+#      [':%E1%B9%A1:%E1%B9%A1:', '{-neg|:|corge}{-suffix|:|plugh}'],
+      ['../ben%20%26%20jerrys/', '../{waldo}/'],
+#      ['telnet:192.0.2.16:80', 'telnet:192.0.2.16{-opt|:80|grault}'],
+      [':200:', ':{1-a_b.c}:']
+    ].each do |test|
+      assert_equal test.first, @parser.parse(test.last).value(defaults)
+    end
   end
 end

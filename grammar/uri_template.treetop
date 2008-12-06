@@ -93,8 +93,8 @@ grammar UriTemplate
       end
     } 
     / 
-    'append' {
-     # The append operator MUST only have one variable in its expansion.  If
+    'suffix' {
+     # The suffix operator MUST only have one variable in its expansion.  If
      # the variable is defined and non-empty then substitute the value of
      # the variable followed by the value of arg, otherwise substitute the
      # empty string.
@@ -136,15 +136,12 @@ grammar UriTemplate
      end
    }
     / 
-    'listjoin' {
-     # The listjoin operator MUST have only one variable in its expansion
-     # and that variable must be a list.  If the list is non-empty then
-     # substitute the concatenation of all the list members with intevening
-     # values of arg.
-      #
-     # The result of substitution MUST match the URI-reference rule and
-     # SHOULD also match any known rules for the scheme of the resulting
-     # URI.
+    'list' {
+    # 	The listjoin operator MUST have only one variable in its expansion
+    # and that variable must be a list.  More than one variable is an
+    # error.  If the list is non-empty then substitute the concatenation of
+    # all the list members with intervening values of arg.  If the list is
+    # empty or the variable is undefined them substitute the empty string.
      def exec
        lambda do |env, joinop, vars|
          return "" unless env[vars].respond_to? :each

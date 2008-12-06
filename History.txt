@@ -1,3 +1,7 @@
+=== 0.3.0 / 2008-12-08
+
+* Implemented version 0.3 (http://bitworking.org/projects/URI-Templates/spec/draft-gregorio-uritemplate-03.txt)
+
 === 0.2.0 / 2008-3-18
 * Changed lib directory structure to reflect the name of the gem.
   use "require 'uri/templates'" instead of "require 'uri_template'"

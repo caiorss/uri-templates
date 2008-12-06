@@ -1,6 +1,10 @@
 = URI-Templates
 http://rubyforge.org/projects/uri-templates/
 
+This release implements version 0.3 of the URI Template specification.
+
+See: http://bitworking.org/projects/URI-Templates/spec/draft-gregorio-uritemplate-03.txt
+
 == DESCRIPTION:
 
 URI Templates are strings that contain embedded variables that are transformed into URIs after embedded variables are substituted. 

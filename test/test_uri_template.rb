@@ -6,6 +6,8 @@ class TestUriTemplate < Test::Unit::TestCase
   def test_encode
     assert_equal "stefan", UriTemplate::Encoder.encode("stefan")
     assert_equal '%26', UriTemplate::Encoder.encode("&")
+    assert_equal '%20', UriTemplate::Encoder.encode(" ")
+    #assert_equal '%CE%8E', UriTemplate::Encoder.encode(Unicode::U03d3)
   end
   
   def test_op
@@ -21,7 +23,7 @@ class TestUriTemplate < Test::Unit::TestCase
       'a_b' => 'baz'
     }
     assert_equal '/&wilma/#bar', UriTemplate::URI.new('/{-prefix|&|foo=wilma}/{-prefix|#|b}').replace(defaults)
-    assert_equal '/foo/data#bar', UriTemplate::URI.new('/{-append|/|a}{-opt|data|points}{-neg|@|a}{-prefix|#|b}').replace(defaults)
+    assert_equal '/foo/data#bar', UriTemplate::URI.new('/{-suffix|/|a}{-opt|data|points}{-neg|@|a}{-prefix|#|b}').replace(defaults)
   end
   
   def test_replace
