@@ -208,7 +208,7 @@ class TestUriTemplateGrammar < Test::Unit::TestCase
 #      ['http://example.org/fred/fred//wilma', 'http://example.org/{bar}{-prefix|/|fred}'],
 #      [':%E1%B9%A1:%E1%B9%A1:', '{-neg|:|corge}{-suffix|:|plugh}'],
       ['../ben%20%26%20jerrys/', '../{waldo}/'],
-#      ['telnet:192.0.2.16:80', 'telnet:192.0.2.16{-opt|:80|grault}'],
+#      ['telnet:192.0.2.16:80', 'telnet:192.0.2.16{-opt|:80|grault}'],    # Test seems to be wrong
       [':200:', ':{1-a_b.c}:']
     ].each do |test|
       assert_equal test.first, @parser.parse(test.last).value(defaults)

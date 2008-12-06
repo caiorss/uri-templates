@@ -243,13 +243,13 @@ module UriTemplate
   end
 
   module Op0
-    # If one or more of the variables are defined and non-empty then
-      # substitute the value of 'arg', otherwise substitute the empty string.
+		# If each variable is undefined or an empty list then substitute the
+		# empty string, otherwise substitute the value of 'arg'.
     def exec
       lambda do |env, arg, vars|
         ret = ''
         vars.split(',').each do |var| 
-          if !env[var].to_s.blank?
+          if env[var] && (env[var].respond_to?(:length) ? env[var].length > 0 : true)
             ret = "#{arg}"
             break
           end

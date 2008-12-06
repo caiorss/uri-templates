@@ -35,6 +35,8 @@ task :generate_parser do
   sh 'tt grammar/uri_template.treetop -o lib/uri/grammar.rb'
 end
 
+#task :test => [:generate_parser]
+
 desc 'Measures test coverage'
 Rcov::RcovTask.new("coverage") do |t|
   t.test_files = FileList['test/test_*.rb']
