@@ -1,6 +1,12 @@
 #  Created by Stefan Saasen.
 #  Copyright (c) 2008. All rights reserved.
 
+class Array
+  def blank?
+    size < 1
+  end
+end
+
 class NilClass #:nodoc:
   def blank?
     true
