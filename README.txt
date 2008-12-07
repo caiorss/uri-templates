@@ -39,6 +39,10 @@ Source:
 
  sudo gem install uri-templates
 
+== Known issues
+
+ * Encoding does not work properly (See test/test_uri_template_grammar.rb#test_draft_0_3)
+
 == LICENSE:
 
 (The MIT License)
