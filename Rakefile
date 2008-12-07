@@ -22,8 +22,8 @@ Hoe.new('uri-templates', UriTemplate::VERSION::STRING) do |p|
   p.need_tar = false
   p.clean_globs = CLEAN
   p.rsync_args << " -z"  
-  p.description = p.paragraphs_of('README.txt', 2..5).join("\n\n")
-  p.url = p.paragraphs_of('README.txt', 0).first.split(/\n/)[1..-1]
+  p.description = p.paragraphs_of('README.rdoc', 2..5).join("\n\n")
+  p.url = p.paragraphs_of('README.rdoc', 0).first.split(/\n/)[1..-1]
   p.changes = p.paragraphs_of('History.txt', 0..1).join("\n\n")
   #p.spec_extras = {:dependencies => []}   # - A hash of extra values to set in the gemspec.
   p.remote_rdoc_dir = ''
