@@ -6,6 +6,9 @@ require 'rcov/rcovtask'
 require 'rake/clean'
 require File.join(File.dirname(__FILE__), 'lib', 'uri', 'version')
 
+gem 'ci_reporter'
+require 'ci/reporter/rake/test_unit' # use this if you're using Test::Unit
+
 class Hoe
   def extra_deps 
     @extra_deps.reject { |x| Array(x).first == 'hoe' } 
