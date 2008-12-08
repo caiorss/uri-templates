@@ -40,6 +40,13 @@ end
 
 #task :test => [:generate_parser]
 
+desc "Run basic unit tests"
+Rake::TestTask.new("test_unit") { |t|
+  t.pattern = 'test/test_*.rb'
+  t.verbose = true
+  t.warning = true
+}
+
 desc 'Measures test coverage'
 Rcov::RcovTask.new("coverage") do |t|
   t.test_files = FileList['test/test_*.rb']
