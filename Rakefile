@@ -16,7 +16,7 @@ class Hoe
 end
 
 # clean files and directories
-CLEAN.include ['**/.*.sw?', '*.gem', '.config', 'coverage']
+CLEAN.include ['**/.*.sw?', '*.gem', '.config', 'coverage', 'results']
 
 Hoe.new('uri-templates', UriTemplate::VERSION::STRING) do |p|
   p.rubyforge_name = 'uri-templates'
@@ -41,7 +41,7 @@ end
 #task :test => [:generate_parser]
 
 desc "Run basic unit tests"
-Rake::TestTask.new("test_unit") { |t|
+Rake::TestTask.new("test_units") { |t|
   t.pattern = 'test/test_*.rb'
   t.verbose = true
   t.warning = true
