@@ -1,5 +1,6 @@
 = URI-Templates
-http://rubyforge.org/projects/uri-templates/
+
+http://juretta.github.com/uri-templates/
 
 This release implements version 0.3 of the URI Template specification.
 
@@ -17,10 +18,10 @@ Read more:
 * http://code.google.com/p/uri-templates/
 
 Bug-Tracker:
-* http://rubyforge.org/tracker/?atid=22376&group_id=5767&func=browse
+* http://github.com/juretta/uri-templates/issues
 
 Source:
- git clone git://scm.juretta.com/uri-templates.git
+  git clone git://github.com/juretta/uri-templates
 
 == SYNOPSIS:
   require 'rubygems'
