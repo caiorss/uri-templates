@@ -1,55 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-	<title>juretta/uri-templates @ GitHub</title>
-	
-	<style type="text/css">
-		body {
-  		margin-top: 1.0em;
-  		background-color: #d7d7d7;
-		  font-family: "helvetica"; 
-  		color: #000000;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-		h1 { font-size: 3.8em; color: #282828; margin-bottom: 3px; }
-		h1 .small { font-size: 0.4em; }
-		h1 a { text-decoration: none }
-		h2 { font-size: 1.5em; color: #282828; }
-    h3 { text-align: center; color: #282828; }
-    a { color: #282828; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-		pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-	</style>
-	
-</head>
-
-<body>
-  <a href="http://github.com/juretta/uri-templates"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
-  
-  <div id="container">
-
-    <div class="download">
-      <a href="http://github.com/juretta/uri-templates/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/juretta/uri-templates/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-    </div>
-      
-    <h1><a href="http://github.com/juretta/uri-templates">uri-templates</a> 
-      <span class="small">by <a href="http://github.com/juretta">juretta</a></span></h1>
-
+---
+layout: default
+---
     <div class="description">
-      URITemplate is a parser for URI Templates as defined in the URI Template specification (http://bitworking.org/projects/URI-Templates).
+      URITemplate is a parser for URI Templates as defined in the URI Template specification (<a href="http://bitworking.org/projects/URI-Templates">http://bitworking.org/projects/URI-Templates</a>).
     </div>
 
     <p>URI Templates are strings that contain embedded variables that are transformed into URIs after embedded variables are 
@@ -57,12 +10,39 @@ substituted.
 
 This specification defines the structure and syntax of URI Templates. 
 </p><h2>Install</h2>
-<p>sudo gem install uri-templates
-</p>
-<h2>License</h2>
-<p>(The MIT License)
 
-<pre>
+<pre>sudo gem install uri-templates
+</pre>
+
+<h2>Example</h2>
+
+{% highlight ruby %}
+
+require 'rubygems'
+require 'uri/templates'
+uri = UriTemplate::URI.new("http://example.org/{userid}").replace("userid" => "stefan")
+print uri # => http://example.org/stefan
+  
+ut = UriTemplate::URI.new("http://example.org/?d={-listjoin|,|points}&{-join|&|a,b}")
+print ut.replace({
+  'a' => 'foo',
+  'b' => 'bar',
+  'points' => ["10","20","30"]
+}) # => http://example.org/?d=10,20,30&a=foo&b=bar
+
+
+{% endhighlight %}
+
+<h2>Dependencies</h2>
+
+<p>
+treetop (<a href="http://treetop.rubyforge.org/">http://treetop.rubyforge.org/</a>) - will be installed automatically
+</p>
+
+<h2>License</h2>
+<p>(The MIT License)</p>
+
+<p class="license">
 Copyright (c) 2008 Stefan Saasen
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -83,14 +63,10 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-</pre>
+</p>
 </p>
 <h2>Authors</h2>
-<p>Stefan Saasen
-<br/>      </p>
-<h2>Contact</h2>
-<p>Stefan Saasen (s@juretta.com)
-<br/>      </p>
+<p>Stefan Saasen</p>
 
 
     <h2>Download</h2>
@@ -103,13 +79,3 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       by running:
       <pre>$ git clone git://github.com/juretta/uri-templates</pre>
     </p>
-      
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/juretta/uri-templates">juretta/uri-templates</a>
-    </div>
-    
-  </div>
-
-  
-</body>
-</html>
